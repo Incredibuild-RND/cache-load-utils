@@ -1,0 +1,57 @@
+[package]
+name = "bazelbench-rs"
+version = "1.0.0"
+edition = "2021"
+
+[profile.release]
+incremental = true
+# overflow-checks = true
+# debug = true
+# lto = true
+opt-level = 3
+
+[lib]
+name = "bazelbench"
+path = "src/lib.rs"
+
+[features]
+#default = ["cuda"]
+cuda = ["dep:cust", "dep:gpu_rand"]
+
+[dependencies]
+anyhow = "1.0.82"
+base64 = "0.22.0"
+bazel-remote-apis-rs = { git = "https://github.com/zachgrayio/bazel-remote-apis-rs", tag = "v0.4.1"}
+clap = { version = "4.5.4", features = ["derive", "env"] }
+dotenv = "0.15.0"
+futures = "0.3.17"
+hex = "0.4.3"
+lazy_static = "1.4.0"
+prometheus = "0.13.3"
+prost = "0.11.6"
+prost-types = "0.11.6"
+rand = "0.8.5"
+reqwest = { version = "0.12.3", features = ["json"] }
+serde = { version = "1.0.152", features = ["derive"] }
+sha2 = "0.10.6"
+time = "0.3.36"
+tokio = { version = "1.37.0", features = ["rt", "rt-multi-thread", "macros"] }
+tokio-stream = { version = "0.1.15", features = ["fs", "sync"] }
+tokio-graceful-shutdown = "0.15.0"
+tonic = { version = "0.8.3", features = ["tls"]}
+uuid = { version = "1.8.0", features = ["v4"] }
+warp = "0.3.7"
+fastrand = "2.0.2"
+blake3 = { version = "1.5.1", features = ["rayon"] }
+
+gpu_rand = { version = "0.1.3", optional = true }
+cust = { version = "0.3.2", optional = true }
+rand_core = "0.6.4"
+
+[dev-dependencies]
+criterion = { version = "0.5.1", features = ["html_reports"] }
+
+[[bench]]
+name = "rust_benchmarks"
+path = "src/rust_bench.rs"
+harness = false

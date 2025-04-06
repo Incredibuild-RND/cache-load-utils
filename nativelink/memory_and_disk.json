@@ -1,0 +1,99 @@
+{
+  "stores": {
+    "MAIN_STORE": {
+      "fast_slow": {
+        "fast": {
+          "verify": {
+            "backend": {
+              "memory": {
+                "eviction_policy": {
+                  // 10gb.
+                  "max_bytes": 10000000000
+                }
+              },
+              "verify_size": true,
+              "hash_verification_function": "blake3"
+            }
+          }
+        },
+        "slow": {
+          "verify": {
+            "backend": {
+              "filesystem": {
+                "content_path": "/tmp/nativelink/data/content_path",
+                "temp_path": "/tmp/nativelink/data/tmp_path",
+                "eviction_policy": {
+                  // 10gb.
+                  "max_bytes": 10000000000
+                }
+              },
+              "verify_size": true,
+              "hash_verification_function": "blake3"
+            }
+          }
+        }
+      }
+    }
+  },
+  "schedulers": {
+    "MAIN_SCHEDULER": {
+      "simple": {
+        "supported_platform_properties": {
+          "cpu_count": "minimum",
+          "memory_kb": "minimum",
+          "network_kbps": "minimum",
+          "disk_read_iops": "minimum",
+          "disk_read_bps": "minimum",
+          "disk_write_iops": "minimum",
+          "disk_write_bps": "minimum",
+          "shm_size": "minimum",
+          "gpu_count": "minimum",
+          "gpu_model": "exact",
+          "cpu_vendor": "exact",
+          "cpu_arch": "exact",
+          "cpu_model": "exact",
+          "kernel_version": "exact",
+          "docker_image": "priority"
+        }
+      }
+    }
+  },
+  "servers": [{
+    "listener": {
+      "http": {
+        "socket_address": "0.0.0.0:50051"
+      }
+    },
+    "services": {
+      "cas": {
+        "main": {
+          "cas_store": "MAIN_STORE"
+        }
+      },
+      "ac": {
+        "main": {
+          "ac_store": "MAIN_STORE"
+        }
+      },
+      "execution": {
+        "main": {
+          "cas_store": "MAIN_STORE",
+          "scheduler": "MAIN_SCHEDULER"
+        }
+      },
+      "capabilities": {
+        "main": {
+          "remote_execution": {
+            "scheduler": "MAIN_SCHEDULER"
+          }
+        }
+      },
+      "bytestream": {
+        "cas_stores": {
+          "main": "MAIN_STORE"
+        }
+      },
+      "health": {}
+    }
+  }]
+}
